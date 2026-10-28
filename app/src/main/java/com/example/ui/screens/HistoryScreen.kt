@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.HistoryItem
+import com.example.ui.components.FrostedGlassSurface
 import com.example.ui.components.RubberBandBouncyContainer
 import com.example.ui.components.bouncyClick
 import com.example.ui.components.glassEffect
@@ -76,15 +77,18 @@ fun HistoryScreen(
       )
 
       if (history.isNotEmpty()) {
-        Box(
+        FrostedGlassSurface(
           modifier = Modifier
-            .glassEffect(isDark, RoundedCornerShape(20.dp), elevation = 4.dp)
             .bouncyClick { showClearConfirm = true }
-            .padding(horizontal = 12.dp, vertical = 7.dp)
             .testTag("clear_history_button"),
-          contentAlignment = Alignment.Center
+          shape = RoundedCornerShape(20.dp),
+          elevation = 4.dp,
+          isDark = isDark
         ) {
-          Row(verticalAlignment = Alignment.CenterVertically) {
+          Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
             Icon(
               imageVector = Icons.Default.ClearAll,
               contentDescription = "Clear History",
@@ -161,16 +165,19 @@ fun HistoryScreen(
       ) {
         items(filteredHistory, key = { it.id }) { item ->
           val cardShape = RoundedCornerShape(20.dp)
-          Box(
+          FrostedGlassSurface(
             modifier = Modifier
               .fillMaxWidth()
-              .glassEffect(isDark, shape = cardShape, elevation = 4.dp)
-              .clickable { onNavigateUrl(item.url) }
-              .padding(14.dp)
-              .testTag("history_item_${item.id}")
+              .bouncyClick { onNavigateUrl(item.url) }
+              .testTag("history_item_${item.id}"),
+            shape = cardShape,
+            elevation = 4.dp,
+            isDark = isDark
           ) {
             Row(
-              modifier = Modifier.fillMaxWidth(),
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
               verticalAlignment = Alignment.CenterVertically
             ) {
               Box(

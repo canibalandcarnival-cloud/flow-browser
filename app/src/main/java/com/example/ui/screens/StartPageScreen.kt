@@ -41,7 +41,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.PickVisualMediaRequest
 import coil.compose.AsyncImage
-import com.example.data.*
+import com.example.data.FavoriteItem
+import com.example.data.ReadingListItem
+import com.example.data.ThemeMode
+import com.example.data.WallpaperPreset
+import com.example.ui.components.FrostedGlassSurface
 import com.example.ui.components.RubberBandBouncyContainer
 import com.example.ui.components.SquircleIcon
 import com.example.ui.components.bouncyClick
@@ -105,19 +109,22 @@ fun StartPageScreen(
       verticalAlignment = Alignment.CenterVertically
     ) {
       // Wallpaper chip
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
-          .glassEffect(isDark, RoundedCornerShape(20.dp), elevation = 4.dp)
           .bouncyClick { showThemeSelector = !showThemeSelector }
-          .padding(horizontal = 14.dp, vertical = 7.dp)
           .testTag("wallpaper_settings_button"),
-        contentAlignment = Alignment.Center
+        shape = RoundedCornerShape(20.dp),
+        elevation = 4.dp,
+        isDark = isDark
       ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+          modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
           Icon(
             imageVector = Icons.Default.Palette,
             contentDescription = "Themes",
-            tint = if (isDark) EmeraldAccent else EmeraldPrimary,
+            tint = accentColor,
             modifier = Modifier.size(16.dp)
           )
           Spacer(modifier = Modifier.width(6.dp))
@@ -131,19 +138,22 @@ fun StartPageScreen(
       }
 
       // Dark / Light Mode toggle pill
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
-          .glassEffect(isDark, RoundedCornerShape(20.dp), elevation = 4.dp)
           .bouncyClick(onClick = onToggleTheme)
-          .padding(horizontal = 14.dp, vertical = 7.dp)
           .testTag("theme_toggle_button"),
-        contentAlignment = Alignment.Center
+        shape = RoundedCornerShape(20.dp),
+        elevation = 4.dp,
+        isDark = isDark
       ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+          modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
           Icon(
             imageVector = if (isDark) Icons.Default.DarkMode else Icons.Default.LightMode,
             contentDescription = "Toggle Dark/Light Mode",
-            tint = if (isDark) EmeraldAccent else Color(0xFFE89A24),
+            tint = if (isDark) accentColor else Color(0xFFE89A24),
             modifier = Modifier.size(16.dp)
           )
           Spacer(modifier = Modifier.width(6.dp))
@@ -159,14 +169,15 @@ fun StartPageScreen(
 
     // Expandable Theme/Wallpaper Selector Drawer
     AnimatedVisibility(visible = showThemeSelector) {
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(bottom = 16.dp)
-          .glassEffect(isDark, RoundedCornerShape(24.dp), elevation = 6.dp)
-          .padding(14.dp)
+          .padding(bottom = 16.dp),
+        shape = RoundedCornerShape(24.dp),
+        elevation = 6.dp,
+        isDark = isDark
       ) {
-        Column {
+        Column(modifier = Modifier.padding(14.dp)) {
           Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -442,16 +453,19 @@ fun StartPageScreen(
       readingList.take(3).forEach { item ->
         val cardShape = RoundedCornerShape(24.dp)
 
-        Box(
+        FrostedGlassSurface(
           modifier = Modifier
             .fillMaxWidth()
-            .glassEffect(isDark, shape = cardShape, elevation = 6.dp)
             .bouncyClick { onNavigateUrl(item.url) }
-            .padding(14.dp)
-            .testTag("reading_card_${item.id}")
+            .testTag("reading_card_${item.id}"),
+          shape = cardShape,
+          elevation = 6.dp,
+          isDark = isDark
         ) {
           Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
           ) {
             // Left Thumbnail

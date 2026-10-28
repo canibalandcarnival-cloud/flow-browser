@@ -79,10 +79,15 @@ class MainActivity : ComponentActivity() {
       }
 
       FlowBrowserTheme(darkTheme = isDark) {
-        BrowserApp(
-          viewModel = browserViewModel,
-          isDark = isDark
-        )
+        CompositionLocalProvider(
+          com.example.ui.components.LocalWallpaperPreset provides uiState.wallpaperPreset,
+          com.example.ui.components.LocalCustomWallpaperUri provides uiState.customWallpaperUri
+        ) {
+          BrowserApp(
+            viewModel = browserViewModel,
+            isDark = isDark
+          )
+        }
       }
     }
   }

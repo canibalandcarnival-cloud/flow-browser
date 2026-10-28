@@ -40,7 +40,160 @@ import com.example.ui.theme.*
 import android.view.HapticFeedbackConstants
 import android.view.SoundEffectConstants
 import android.view.View
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImage
+import com.example.R
+import com.example.data.WallpaperPreset
+
+val LocalWallpaperPreset = compositionLocalOf { WallpaperPreset.FOREST }
+val LocalCustomWallpaperUri = compositionLocalOf<String?> { null }
+
+/**
+ * Authentic frosted glass surface that renders a real Gaussian-blurred optical backdrop
+ * of the active wallpaper, topped with crystalline specular gradient highlights and borders.
+ */
+@Composable
+fun FrostedGlassSurface(
+  modifier: Modifier = Modifier,
+  shape: Shape = RoundedCornerShape(22.dp),
+  elevation: Dp = 8.dp,
+  isDark: Boolean = true,
+  borderAlpha: Float = 1.0f,
+  content: @Composable BoxScope.() -> Unit
+) {
+  val wallpaperPreset = LocalWallpaperPreset.current
+  val customUri = LocalCustomWallpaperUri.current
+
+  Box(
+    modifier = modifier
+      .shadow(
+        elevation = elevation,
+        shape = shape,
+        ambientColor = if (isDark) Color(0x66000000) else Color(0x22000000),
+        spotColor = if (isDark) Color(0x80000000) else Color(0x33000000)
+      )
+      .clip(shape)
+  ) {
+    // 1. Optical Gaussian-blurred wallpaper backdrop
+    when (wallpaperPreset) {
+      WallpaperPreset.FOREST -> {
+        Image(
+          painter = painterResource(id = R.drawable.wallpaper_forest_blur),
+          contentDescription = null,
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize()
+        )
+      }
+      WallpaperPreset.DARK -> {
+        Image(
+          painter = painterResource(id = R.drawable.wallpaper_dark_blur),
+          contentDescription = null,
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize()
+        )
+      }
+      WallpaperPreset.SUNSET -> {
+        Image(
+          painter = painterResource(id = R.drawable.wallpaper_sunset_blur),
+          contentDescription = null,
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize()
+        )
+      }
+      WallpaperPreset.MINT_FROST -> {
+        Box(
+          modifier = Modifier
+            .matchParentSize()
+            .background(
+              Brush.verticalGradient(
+                if (isDark) listOf(Color(0xFF0F261B), Color(0xFF133624))
+                else listOf(Color(0xFFE2F0E7), Color(0xFFC7E6D3))
+              )
+            )
+        )
+      }
+      WallpaperPreset.CUSTOM -> {
+        if (!customUri.isNullOrEmpty()) {
+          AsyncImage(
+            model = customUri,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+              .matchParentSize()
+              .blur(26.dp)
+          )
+        } else {
+          Image(
+            painter = painterResource(id = R.drawable.wallpaper_forest_blur),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
+          )
+        }
+      }
+    }
+
+    // 2. Optical frosted glass tint and translucent reflection
+    Box(
+      modifier = Modifier
+        .matchParentSize()
+        .background(
+          Brush.linearGradient(
+            colors = if (isDark) {
+              listOf(
+                Color.White.copy(alpha = 0.14f),
+                Color(0xFF101914).copy(alpha = 0.40f),
+                Color.White.copy(alpha = 0.05f)
+              )
+            } else {
+              listOf(
+                Color.White.copy(alpha = 0.72f),
+                Color(0xFFF3F7F5).copy(alpha = 0.50f),
+                Color.White.copy(alpha = 0.58f)
+              )
+            },
+            start = Offset(0f, 0f),
+            end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+          )
+        )
+    )
+
+    // 3. Specular rim highlight border
+    Box(
+      modifier = Modifier
+        .matchParentSize()
+        .border(
+          width = 0.9.dp,
+          brush = Brush.linearGradient(
+            colors = if (isDark) {
+              listOf(
+                Color.White.copy(alpha = 0.48f * borderAlpha),
+                Color.White.copy(alpha = 0.08f),
+                Color.White.copy(alpha = 0.28f * borderAlpha)
+              )
+            } else {
+              listOf(
+                Color.White.copy(alpha = 0.92f * borderAlpha),
+                Color.White.copy(alpha = 0.32f),
+                Color.White.copy(alpha = 0.72f * borderAlpha)
+              )
+            },
+            start = Offset(0f, 0f),
+            end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+          ),
+          shape = shape
+        )
+    )
+
+    // 4. Foreground content
+    content()
+  }
+}
 
 /**
  * Plays haptic tick and audio click SFX for tactile feedback.

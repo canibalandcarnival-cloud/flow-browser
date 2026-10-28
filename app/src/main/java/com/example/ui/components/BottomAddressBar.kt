@@ -91,55 +91,63 @@ fun BottomAddressBar(
     ) {
       // 1. Back circular button
       val backEnabled = currentTab.canGoBack || isBrowsing
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
           .size(52.dp)
-          .glassEffect(isDark = isDark, shape = CircleShape, elevation = 6.dp)
           .bouncyClick(enabled = true, onClick = onBackClick)
           .testTag("browser_back_button"),
-        contentAlignment = Alignment.Center
+        shape = CircleShape,
+        elevation = 6.dp,
+        isDark = isDark
       ) {
-        Icon(
-          imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-          contentDescription = "Back",
-          tint = if (backEnabled) iconTint else iconTint.copy(alpha = 0.4f),
-          modifier = Modifier.size(20.dp)
-        )
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+          Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Back",
+            tint = if (backEnabled) iconTint else iconTint.copy(alpha = 0.4f),
+            modifier = Modifier.size(20.dp)
+          )
+        }
       }
 
       // Optional Forward button if canGoForward in webview
       if (currentTab.canGoForward && isBrowsing) {
-        Box(
+        FrostedGlassSurface(
           modifier = Modifier
             .size(46.dp)
-            .glassEffect(isDark = isDark, shape = CircleShape, elevation = 4.dp)
             .bouncyClick(enabled = true, onClick = onForwardClick)
             .testTag("browser_forward_button"),
-          contentAlignment = Alignment.Center
+          shape = CircleShape,
+          elevation = 4.dp,
+          isDark = isDark
         ) {
-          Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-            contentDescription = "Forward",
-            tint = iconTint,
-            modifier = Modifier.size(18.dp)
-          )
+          Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Icon(
+              imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+              contentDescription = "Forward",
+              tint = iconTint,
+              modifier = Modifier.size(18.dp)
+            )
+          }
         }
       }
 
       // 2. Center Search / Address Bar Pill
       val pillShape = RoundedCornerShape(28.dp)
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
           .weight(1f)
           .height(52.dp)
-          .glassEffect(isDark = isDark, shape = pillShape, elevation = 6.dp)
           .bouncyClick(scaleDown = 0.96f, onClick = onAddressClick)
-          .padding(horizontal = 14.dp)
           .testTag("browser_address_bar"),
-        contentAlignment = Alignment.CenterStart
+        shape = pillShape,
+        elevation = 6.dp,
+        isDark = isDark
       ) {
         Row(
-          modifier = Modifier.fillMaxWidth(),
+          modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 14.dp),
           verticalAlignment = Alignment.CenterVertically
         ) {
           if (isBrowsing) {
@@ -216,19 +224,21 @@ fun BottomAddressBar(
 
       // 3. Right Tabs Squircle Button
       val tabShape = RoundedCornerShape(18.dp)
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
           .size(52.dp)
-          .glassEffect(isDark = isDark, shape = tabShape, elevation = 6.dp)
           .bouncyClick(onClick = onTabsClick)
           .testTag("browser_tabs_button"),
-        contentAlignment = Alignment.Center
+        shape = tabShape,
+        elevation = 6.dp,
+        isDark = isDark
       ) {
-        // Dual-card tabs icon
-        Box(
-          modifier = Modifier.size(24.dp),
-          contentAlignment = Alignment.Center
-        ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+          // Dual-card tabs icon
+          Box(
+            modifier = Modifier.size(24.dp),
+            contentAlignment = Alignment.Center
+          ) {
           // Background offset square
           Box(
             modifier = Modifier
@@ -260,4 +270,5 @@ fun BottomAddressBar(
       }
     }
   }
+}
 }

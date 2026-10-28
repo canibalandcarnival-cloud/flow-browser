@@ -64,18 +64,22 @@ fun TabSwitcherSheet(
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          IconButton(
-            onClick = { onNewTab(false) },
+          FrostedGlassSurface(
             modifier = Modifier
               .size(44.dp)
-              .glassEffect(isDark, CircleShape, elevation = 4.dp)
-              .testTag("new_tab_button")
+              .bouncyClick { onNewTab(false) }
+              .testTag("new_tab_button"),
+            shape = CircleShape,
+            elevation = 4.dp,
+            isDark = isDark
           ) {
-            Icon(
-              imageVector = Icons.Default.Add,
-              contentDescription = "New Tab",
-              tint = if (isDark) EmeraldAccent else EmeraldPrimary
-            )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+              Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "New Tab",
+                tint = if (isDark) EmeraldAccent else EmeraldPrimary
+              )
+            }
           }
 
           Text(

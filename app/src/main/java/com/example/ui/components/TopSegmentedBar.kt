@@ -62,14 +62,15 @@ fun TopSegmentedBar(
   val barShape = RoundedCornerShape(30.dp)
   val pillShape = RoundedCornerShape(22.dp)
 
-  Box(
+  FrostedGlassSurface(
     modifier = modifier
       .fillMaxWidth()
       .height(56.dp)
       .padding(horizontal = 16.dp)
-      .glassEffect(isDark = isDark, shape = barShape, elevation = 6.dp)
       .testTag("top_segmented_bar"),
-    contentAlignment = Alignment.CenterStart
+    shape = barShape,
+    elevation = 6.dp,
+    isDark = isDark
   ) {
     // Sliding active pill background
     BoxWithConstraints(modifier = Modifier.fillMaxSize().padding(4.dp)) {

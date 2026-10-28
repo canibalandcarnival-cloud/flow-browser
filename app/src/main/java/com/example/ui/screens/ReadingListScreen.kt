@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.ReadingListItem
+import com.example.ui.components.FrostedGlassSurface
 import com.example.ui.components.ReadingGlassesIcon
 import com.example.ui.components.RubberBandBouncyContainer
 import com.example.ui.components.bouncyClick
@@ -69,20 +70,25 @@ fun ReadingListScreen(
       )
 
       // Unread filter pill
-      Box(
+      FrostedGlassSurface(
         modifier = Modifier
-          .glassEffect(isDark, RoundedCornerShape(20.dp), elevation = 4.dp)
           .bouncyClick { showUnreadOnly = !showUnreadOnly }
-          .padding(horizontal = 12.dp, vertical = 7.dp)
           .testTag("toggle_unread_filter"),
-        contentAlignment = Alignment.Center
+        shape = RoundedCornerShape(20.dp),
+        elevation = 4.dp,
+        isDark = isDark
       ) {
-        Text(
-          text = if (showUnreadOnly) "Showing Unread" else "Showing All",
-          color = if (showUnreadOnly) (if (isDark) EmeraldAccent else EmeraldPrimary) else headerTextColor,
-          fontSize = 12.sp,
-          fontWeight = FontWeight.SemiBold
-        )
+        Box(
+          modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+          contentAlignment = Alignment.Center
+        ) {
+          Text(
+            text = if (showUnreadOnly) "Showing Unread" else "Showing All",
+            color = if (showUnreadOnly) (if (isDark) EmeraldAccent else EmeraldPrimary) else headerTextColor,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold
+          )
+        }
       }
     }
 
@@ -117,16 +123,19 @@ fun ReadingListScreen(
       ) {
         items(displayedList, key = { it.id }) { item ->
           val cardShape = RoundedCornerShape(22.dp)
-          Box(
+          FrostedGlassSurface(
             modifier = Modifier
               .fillMaxWidth()
-              .glassEffect(isDark, shape = cardShape, elevation = 5.dp)
-              .clickable { onNavigateUrl(item.url) }
-              .padding(14.dp)
-              .testTag("reading_item_${item.id}")
+              .bouncyClick { onNavigateUrl(item.url) }
+              .testTag("reading_item_${item.id}"),
+            shape = cardShape,
+            elevation = 5.dp,
+            isDark = isDark
           ) {
             Row(
-              modifier = Modifier.fillMaxWidth(),
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
               verticalAlignment = Alignment.CenterVertically
             ) {
               Image(
