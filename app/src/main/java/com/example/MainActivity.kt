@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -124,17 +125,8 @@ fun BrowserApp(
         .statusBarsPadding()
     ) {
       if (isStartPage) {
-        Column(modifier = Modifier.fillMaxSize()) {
-          // Top Segmented Pill Bar (as in screenshot)
-          TopSegmentedBar(
-            currentSegment = uiState.currentSegment,
-            onSegmentSelected = { viewModel.setSegment(it) },
-            isDark = isDark,
-            accentColor = accentColor,
-            modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)
-          )
-
-          // Segment Views with smooth crossfade
+        Box(modifier = Modifier.fillMaxSize()) {
+          // Segment Views with smooth crossfade - full bleed under floating frosted glass bars
           AnimatedContent(
             targetState = uiState.currentSegment,
             transitionSpec = {
@@ -142,7 +134,7 @@ fun BrowserApp(
                   fadeOut(animationSpec = spring(stiffness = 400f))
             },
             label = "segment_crossfade",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.fillMaxSize()
           ) { segment ->
             when (segment) {
               ActiveSegment.START_PAGE -> {
@@ -191,6 +183,18 @@ fun BrowserApp(
               }
             }
           }
+
+          // Top Segmented Pill Bar floating over scrolling content with frosted glass
+          TopSegmentedBar(
+            currentSegment = uiState.currentSegment,
+            onSegmentSelected = { viewModel.setSegment(it) },
+            isDark = isDark,
+            accentColor = accentColor,
+            modifier = Modifier
+              .align(Alignment.TopCenter)
+              .padding(top = 10.dp)
+              .zIndex(5f)
+          )
         }
       } else {
         // Active Full Web Browser Screen
@@ -224,6 +228,7 @@ fun BrowserApp(
         .align(Alignment.BottomCenter)
         .offset(y = bottomOffset)
         .navigationBarsPadding()
+        .zIndex(5f)
     ) {
       BottomAddressBar(
         currentTab = activeTab,

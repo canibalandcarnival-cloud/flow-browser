@@ -74,18 +74,21 @@ fun FrostedGlassSurface(
       .shadow(
         elevation = elevation,
         shape = shape,
-        ambientColor = if (isDark) Color(0x66000000) else Color(0x22000000),
-        spotColor = if (isDark) Color(0x80000000) else Color(0x33000000)
+        ambientColor = if (isDark) Color(0x55000000) else Color(0x18000000),
+        spotColor = if (isDark) Color(0x66000000) else Color(0x22000000)
       )
       .clip(shape)
   ) {
-    // 1. Optical Gaussian-blurred wallpaper backdrop
+    val accentColor = Color(wallpaperPreset.accentColor)
+
+    // 1. Soft optical Gaussian-blurred wallpaper backdrop (translucent at 22% alpha so underlying content shines through)
     when (wallpaperPreset) {
       WallpaperPreset.FOREST -> {
         Image(
           painter = painterResource(id = R.drawable.wallpaper_forest_blur),
           contentDescription = null,
           contentScale = ContentScale.Crop,
+          alpha = 0.22f,
           modifier = Modifier.matchParentSize()
         )
       }
@@ -94,6 +97,7 @@ fun FrostedGlassSurface(
           painter = painterResource(id = R.drawable.wallpaper_dark_blur),
           contentDescription = null,
           contentScale = ContentScale.Crop,
+          alpha = 0.22f,
           modifier = Modifier.matchParentSize()
         )
       }
@@ -102,6 +106,7 @@ fun FrostedGlassSurface(
           painter = painterResource(id = R.drawable.wallpaper_sunset_blur),
           contentDescription = null,
           contentScale = ContentScale.Crop,
+          alpha = 0.22f,
           modifier = Modifier.matchParentSize()
         )
       }
@@ -111,8 +116,8 @@ fun FrostedGlassSurface(
             .matchParentSize()
             .background(
               Brush.verticalGradient(
-                if (isDark) listOf(Color(0xFF0F261B), Color(0xFF133624))
-                else listOf(Color(0xFFE2F0E7), Color(0xFFC7E6D3))
+                if (isDark) listOf(Color(0xFF0F261B).copy(alpha = 0.22f), Color(0xFF133624).copy(alpha = 0.22f))
+                else listOf(Color(0xFFE2F0E7).copy(alpha = 0.22f), Color(0xFFC7E6D3).copy(alpha = 0.22f))
               )
             )
         )
@@ -123,6 +128,7 @@ fun FrostedGlassSurface(
             model = customUri,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            alpha = 0.22f,
             modifier = Modifier
               .matchParentSize()
               .blur(26.dp)
@@ -132,13 +138,24 @@ fun FrostedGlassSurface(
             painter = painterResource(id = R.drawable.wallpaper_forest_blur),
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            alpha = 0.22f,
             modifier = Modifier.matchParentSize()
           )
         }
       }
     }
 
-    // 2. Optical frosted glass tint and translucent reflection
+    // 2. Translucent frosted glass substrate allowing underlying content to blend through
+    Box(
+      modifier = Modifier
+        .matchParentSize()
+        .background(
+          if (isDark) Color(0xFF0F1813).copy(alpha = 0.38f)
+          else Color.White.copy(alpha = 0.58f)
+        )
+    )
+
+    // 3. Dynamic chromatic ambient reflection matching wallpaper palette
     Box(
       modifier = Modifier
         .matchParentSize()
@@ -146,15 +163,15 @@ fun FrostedGlassSurface(
           Brush.linearGradient(
             colors = if (isDark) {
               listOf(
-                Color.White.copy(alpha = 0.14f),
-                Color(0xFF101914).copy(alpha = 0.40f),
-                Color.White.copy(alpha = 0.05f)
+                Color.White.copy(alpha = 0.16f),
+                accentColor.copy(alpha = 0.08f),
+                Color.White.copy(alpha = 0.04f)
               )
             } else {
               listOf(
-                Color.White.copy(alpha = 0.72f),
-                Color(0xFFF3F7F5).copy(alpha = 0.50f),
-                Color.White.copy(alpha = 0.58f)
+                Color.White.copy(alpha = 0.70f),
+                accentColor.copy(alpha = 0.06f),
+                Color.White.copy(alpha = 0.50f)
               )
             },
             start = Offset(0f, 0f),
@@ -163,7 +180,23 @@ fun FrostedGlassSurface(
         )
     )
 
-    // 3. Specular rim highlight border
+    // 4. Upper specular sheen arc (giving optical curvature and physical glass depth)
+    Box(
+      modifier = Modifier
+        .matchParentSize()
+        .background(
+          Brush.verticalGradient(
+            colors = listOf(
+              Color.White.copy(alpha = if (isDark) 0.11f else 0.26f),
+              Color.Transparent
+            ),
+            startY = 0f,
+            endY = 140f
+          )
+        )
+    )
+
+    // 5. Specular rim highlight border
     Box(
       modifier = Modifier
         .matchParentSize()
@@ -190,7 +223,7 @@ fun FrostedGlassSurface(
         )
     )
 
-    // 4. Foreground content
+    // 6. Foreground content
     content()
   }
 }

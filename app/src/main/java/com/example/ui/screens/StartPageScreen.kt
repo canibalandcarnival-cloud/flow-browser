@@ -98,7 +98,7 @@ fun StartPageScreen(
         .fillMaxSize()
         .verticalScroll(scrollState, flingBehavior = flingBehavior)
         .padding(horizontal = 18.dp)
-        .padding(top = 16.dp, bottom = 96.dp)
+        .padding(top = 74.dp, bottom = 96.dp)
     ) {
     // Top Bar quick action pill (Theme Mode & Wallpaper)
     Row(

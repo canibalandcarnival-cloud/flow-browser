@@ -60,7 +60,7 @@ fun HistoryScreen(
       modifier = Modifier
         .fillMaxSize()
         .padding(horizontal = 18.dp)
-        .padding(top = 16.dp, bottom = 96.dp)
+        .padding(top = 74.dp, bottom = 96.dp)
     ) {
     // Header
     Row(
